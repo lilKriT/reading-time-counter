@@ -52,16 +52,53 @@ class ReadingTimeCounter
 
         // This adds it to the db
         register_setting("wordCountPlugin", "rtc_location", array("sanitize_callback" => "sanitize_text_field", "default" => "0"));  // group of settings, setting name, array(how to sanitize, default value)
+
+        // Another field - Headline
+        add_settings_field("rtc_headline", "Headline Text", array($this, "headlineHTML"), "rtc-settings-page", "rtc_first_section");
+        register_setting("wordCountPlugin", "rtc_headline", array("sanitize_callback" => "sanitize_text_field", "default" => "Post statistics"));
+
+        // Word Count
+        add_settings_field("rtc_wordcount", "Word Count", array($this, "wordcountHTML"), "rtc-settings-page", "rtc_first_section");
+        register_setting("wordCountPlugin", "rtc_wordcount", array("sanitize_callback" => "sanitize_text_field", "default" => "1"));
+
+        // Character Count
+        add_settings_field("rtc_charactercount", "Character Count", array($this, "characterCountHTML"), "rtc-settings-page", "rtc_first_section");
+        register_setting("wordCountPlugin", "rtc_charactercount", array("sanitize_callback" => "sanitize_text_field", "default" => "1"));
+
+        // Read Time
+        add_settings_field("rtc_readTime", "Read Time", array($this, "readTimeHTML"), "rtc-settings-page", "rtc_first_section");
+        register_setting("wordCountPlugin", "rtc_readTime", array("sanitize_callback" => "sanitize_text_field", "default" => "1"));
     }
 
     function locationHTML()
     { ?>
         <!-- match the name of the setting you registered -->
         <select name="rtc_location">
-            <option value="0">Beginning of post</option>
-            <option value="1">End of post</option>
+            <option value="0" <?php selected(get_option("rtc_location"), "0"); ?>>Beginning of post</option>
+            <option value="1" <?php selected(get_option("rtc_location"), "1"); ?>>End of post</option>
         </select>
-<? }
+    <?php }
+
+    function headlineHTML()
+    { ?>
+        <input type="text" name="rtc_headline" value="<?php echo esc_attr(get_option("rtc_headline")); ?>">
+
+    <?php }
+
+    function wordcountHTML()
+    { ?>
+        <input type="checkbox" name="rtc_wordcount" value="1" <?php checked(get_option("rtc_wordcount"), "1"); ?>>
+    <?php }
+
+    function characterCountHTML()
+    { ?>
+        <input type="checkbox" name="rtc_charactercount" value="1" <?php checked(get_option("rtc_charactercount"), "1"); ?>>
+    <?php    }
+
+    function readTimeHTML()
+    { ?>
+        <input type="checkbox" name="rtc_readTime" value="1" <?php checked(get_option("rtc_readTime"), "1"); ?>>
+<?php    }
 }
 
 // Actually created an instance
