@@ -58,15 +58,15 @@ class ReadingTimeCounter
         register_setting("wordCountPlugin", "rtc_headline", array("sanitize_callback" => "sanitize_text_field", "default" => "Post statistics"));
 
         // Word Count
-        add_settings_field("rtc_wordcount", "Word Count", array($this, "wordcountHTML"), "rtc-settings-page", "rtc_first_section");
+        add_settings_field("rtc_wordcount", "Word Count", array($this, "checkBoxHTML"), "rtc-settings-page", "rtc_first_section", array('theName' => "rtc_wordcount"));
         register_setting("wordCountPlugin", "rtc_wordcount", array("sanitize_callback" => "sanitize_text_field", "default" => "1"));
 
         // Character Count
-        add_settings_field("rtc_charactercount", "Character Count", array($this, "characterCountHTML"), "rtc-settings-page", "rtc_first_section");
+        add_settings_field("rtc_charactercount", "Character Count", array($this, "checkBoxHTML"), "rtc-settings-page", "rtc_first_section", array('theName' => "rtc_charactercount"));
         register_setting("wordCountPlugin", "rtc_charactercount", array("sanitize_callback" => "sanitize_text_field", "default" => "1"));
 
         // Read Time
-        add_settings_field("rtc_readTime", "Read Time", array($this, "readTimeHTML"), "rtc-settings-page", "rtc_first_section");
+        add_settings_field("rtc_readTime", "Read Time", array($this, "checkBoxHTML"), "rtc-settings-page", "rtc_first_section", array('theName' => "rtc_readTime"));
         register_setting("wordCountPlugin", "rtc_readTime", array("sanitize_callback" => "sanitize_text_field", "default" => "1"));
     }
 
@@ -85,20 +85,10 @@ class ReadingTimeCounter
 
     <?php }
 
-    function wordcountHTML()
+    function checkBoxHTML($args)
     { ?>
-        <input type="checkbox" name="rtc_wordcount" value="1" <?php checked(get_option("rtc_wordcount"), "1"); ?>>
-    <?php }
-
-    function characterCountHTML()
-    { ?>
-        <input type="checkbox" name="rtc_charactercount" value="1" <?php checked(get_option("rtc_charactercount"), "1"); ?>>
-    <?php    }
-
-    function readTimeHTML()
-    { ?>
-        <input type="checkbox" name="rtc_readTime" value="1" <?php checked(get_option("rtc_readTime"), "1"); ?>>
-<?php    }
+        <input type="checkbox" name="<?php echo $args['theName'] ?>" value="1" <?php checked(get_option($args['theName']), "1"); ?>>
+<?php     }
 }
 
 // Actually created an instance
