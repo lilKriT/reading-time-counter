@@ -15,6 +15,7 @@ class ReadingTimeCounter
     {
         add_action("admin_menu", array($this, "adminPage"));
         add_action("admin_init", array($this, "settings"));
+        add_filter("the_content", array($this, "ifWrap"));
     }
 
     function adminPage()
@@ -97,6 +98,44 @@ class ReadingTimeCounter
             return get_option("rtc_location");
         }
         return $input;
+    }
+
+    function ifWrap($content)
+    {
+        if (is_main_query() && is_single() && (get_option("rtc_wordcount", "1") || get_option("rtc_charactercount", "1") || get_option("rtc_readTime", "1"))) {
+            return $this->addInfo($content);
+        }
+        return $content;
+    }
+
+    function addInfo($content)
+    {
+        $extraInfo = '<h3>' . esc_html(get_option("rtc_headline", "Post Statistics")) . '</h3><p>';
+
+        // Calculating
+        if (get_option("rtc_wordcount", "1") || get_option("rtc_readTime", "1")) {
+            $wordCount = str_word_count(strip_tags($content));
+        }
+
+        if (get_option("rtc_wordcount", "1")) {
+            $extraInfo .= "This post has " . $wordCount . " words.<br>";
+        }
+
+        if (get_option("rtc_charactercount", "1")) {
+            $extraInfo .= "This post has " . strlen(strip_tags($content)) . " characters.<br>";
+        }
+
+        if (get_option("rtc_readTime", "1")) {
+            $extraInfo .= "This post will take around " . round($wordCount / 225) . " minute(s) to read.<br>";
+        }
+
+        $extraInfo .= "</p>";
+
+        if (get_option("rtc_location", 0)) {
+            return $extraInfo . $content;
+        } else {
+            return $content . $extraInfo;
+        }
     }
 }
 
