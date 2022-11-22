@@ -6,9 +6,10 @@
     Version: 1.0
     Author: lilKriT
     Author URI: https://lilkrit.dev
+    Text Domain: rtcdomain
+    Domain Path: /languages
 */
 
-// 
 class ReadingTimeCounter
 {
     function __construct()
@@ -16,11 +17,12 @@ class ReadingTimeCounter
         add_action("admin_menu", array($this, "adminPage"));
         add_action("admin_init", array($this, "settings"));
         add_filter("the_content", array($this, "ifWrap"));
+        add_action("init", array($this, "languages"));
     }
 
     function adminPage()
     {
-        add_options_page("Reading Time Counter", "RT Counter", "manage_options", "rtc-settings-page", array($this, "settingsPageHTML"));    // title, name in link list, permissions, slug, function
+        add_options_page("Reading Time Counter", esc_html__("RT Count", "rtcdomain"), "manage_options", "rtc-settings-page", array($this, "settingsPageHTML"));    // title, name in link list, permissions, slug, function
     }
 
     function settingsPageHTML()
@@ -118,7 +120,7 @@ class ReadingTimeCounter
         }
 
         if (get_option("rtc_wordcount", "1")) {
-            $extraInfo .= "This post has " . $wordCount . " words.<br>";
+            $extraInfo .= esc_html__("This post has", "rtcdomain") . " " . $wordCount . " " . __("words", "rtcdomain") . ".<br>";
         }
 
         if (get_option("rtc_charactercount", "1")) {
@@ -136,6 +138,11 @@ class ReadingTimeCounter
         } else {
             return $content . $extraInfo;
         }
+    }
+
+    function languages()
+    {
+        load_plugin_textdomain("rtcdomain", false, dirname(plugin_basename(__FILE__)) . "/languages");
     }
 }
 
