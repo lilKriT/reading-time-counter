@@ -51,7 +51,7 @@ class ReadingTimeCounter
         add_settings_field("rtc_location", "Display Location", array($this, "locationHTML"), "rtc-settings-page", "rtc_first_section");   // name (same as in register setting), html label, the html, slug of the page, section
 
         // This adds it to the db
-        register_setting("wordCountPlugin", "rtc_location", array("sanitize_callback" => "sanitize_text_field", "default" => "0"));  // group of settings, setting name, array(how to sanitize, default value)
+        register_setting("wordCountPlugin", "rtc_location", array("sanitize_callback" => array($this, "sanitizeLocation"), "default" => "0"));  // group of settings, setting name, array(how to sanitize, default value)
 
         // Another field - Headline
         add_settings_field("rtc_headline", "Headline Text", array($this, "headlineHTML"), "rtc-settings-page", "rtc_first_section");
@@ -89,6 +89,15 @@ class ReadingTimeCounter
     { ?>
         <input type="checkbox" name="<?php echo $args['theName'] ?>" value="1" <?php checked(get_option($args['theName']), "1"); ?>>
 <?php     }
+
+    function sanitizeLocation($input)
+    {
+        if ($input != "0" && $input != "1") {
+            add_settings_error("rtc_location", "wcp_location_error", "Display location must be beginning or end.");
+            return get_option("rtc_location");
+        }
+        return $input;
+    }
 }
 
 // Actually created an instance
